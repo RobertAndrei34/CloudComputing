@@ -1,0 +1,112 @@
+{
+  "info": {
+    "_postman_id": "c6f0f3b2-2c2c-4e1a-9a24-2b83006c2e9b",
+    "name": "REST No-Framework API (Authors & Books)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:8080" }
+  ],
+  "item": [
+    {
+      "name": "POST /api/authors (create author)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/api/authors", "host": ["{{baseUrl}}"], "path": ["api", "authors"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"George Orwell\",\n  \"country\": \"UK\"\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /api/books (create book)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/api/books", "host": ["{{baseUrl}}"], "path": ["api", "books"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"1984\",\n  \"year\": 1949,\n  \"author_id\": 1,\n  \"isbn\": \"9780451524935\"\n}"
+        }
+      }
+    },
+    {
+      "name": "GET /api/books (list books)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/books?limit=20&offset=0",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "books"],
+          "query": [
+            { "key": "limit", "value": "20" },
+            { "key": "offset", "value": "0" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /api/books/{id} (get one book)",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/api/books/1", "host": ["{{baseUrl}}"], "path": ["api", "books", "1"] }
+      }
+    },
+    {
+      "name": "PUT /api/authors/{id} (update author)",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/api/authors/1", "host": ["{{baseUrl}}"], "path": ["api", "authors", "1"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"George Orwell\",\n  \"country\": \"United Kingdom\"\n}"
+        }
+      }
+    },
+    {
+      "name": "PUT /api/books/{id} (update book)",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/api/books/1", "host": ["{{baseUrl}}"], "path": ["api", "books", "1"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Nineteen Eighty-Four\",\n  \"year\": 1949,\n  \"author_id\": 1,\n  \"isbn\": \"9780451524935\"\n}"
+        }
+      }
+    },
+    {
+      "name": "DELETE /api/books/{id} (delete book)",
+      "request": {
+        "method": "DELETE",
+        "url": { "raw": "{{baseUrl}}/api/books/1", "host": ["{{baseUrl}}"], "path": ["api", "books", "1"] }
+      }
+    },
+    {
+      "name": "DELETE /api/authors/{id} (delete author)",
+      "request": {
+        "method": "DELETE",
+        "url": { "raw": "{{baseUrl}}/api/authors/1", "host": ["{{baseUrl}}"], "path": ["api", "authors", "1"] }
+      }
+    },
+    {
+      "name": "Negative: POST wrong Content-Type",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "text/plain" }],
+        "url": { "raw": "{{baseUrl}}/api/authors", "host": ["{{baseUrl}}"], "path": ["api", "authors"] },
+        "body": { "mode": "raw", "raw": "hello" }
+      }
+    },
+    {
+      "name": "Negative: GET missing book (404)",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/api/books/999999", "host": ["{{baseUrl}}"], "path": ["api", "books", "999999"] }
+      }
+    }
+  ]
+}
