@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ task.title }}</title>
+</head>
+<body>
+    <h1>{{ task.title }}</h1>
+
+    <p>{{ task.description }}</p>
+    <p>Status: {{ task.status }}</p>
+    <p>Created: {{ task.created_at }}</p>
+
+    {% if task.attachment_url %}
+        <p>
+            Attachment:
+            <a href="{{ task.attachment_url }}">Download file</a>
+        </p>
+    {% endif %}
+
+    <a href="/">Back</a>
+</body>
+</html>

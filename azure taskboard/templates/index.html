@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TaskBoard Azure</title>
+</head>
+<body>
+    <h1>TaskBoard Azure</h1>
+
+    <form action="/tasks/create" method="POST" enctype="multipart/form-data">
+        <input type="text" name="title" placeholder="Task title" required>
+        <br>
+
+        <textarea name="description" placeholder="Task description"></textarea>
+        <br>
+
+        <input type="file" name="attachment">
+        <br>
+
+        <button type="submit">Create Task</button>
+    </form>
+
+    <hr>
+
+    <h2>Tasks</h2>
+
+    {% for task in tasks %}
+        <div>
+            <h3>
+                <a href="/tasks/{{ task.id }}">{{ task.title }}</a>
+            </h3>
+            <p>Status: {{ task.status }}</p>
+            <p>{{ task.description }}</p>
+        </div>
+    {% endfor %}
+</body>
+</html>
