@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="card">
+  <h2>Upload a new receipt</h2>
+  <form action="{{ url_for('upload_receipt') }}" method="post" enctype="multipart/form-data" class="grid-form">
+    <label>
+      Title
+      <input type="text" name="title" placeholder="Groceries - April 2" required>
+    </label>
+    <label>
+      Category
+      <input type="text" name="category" placeholder="Groceries">
+    </label>
+    <label>
+      Amount
+      <input type="number" step="0.01" name="amount" placeholder="59.90">
+    </label>
+    <label class="full-width">
+      Receipt file
+      <input type="file" name="receipt_file" accept=".png,.jpg,.jpeg,.pdf,.webp" required>
+    </label>
+    <button type="submit">Upload</button>
+  </form>
+</section>
+
+<section class="card">
+  <h2>Stored receipts</h2>
+  {% if receipts %}
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Category</th>
+          <th>Amount</th>
+          <th>Created</th>
+          <th>Vision</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for receipt in receipts %}
+        <tr>
+          <td>{{ receipt.title }}</td>
+          <td>{{ receipt.category }}</td>
+          <td>{% if receipt.amount is not none %}{{ '%.2f'|format(receipt.amount) }}{% else %}-{% endif %}</td>
+          <td>{{ receipt.created_at|fmtdate }}</td>
+          <td>{{ receipt.vision_status }}</td>
+          <td>
+            <a href="{{ url_for('receipt_detail', receipt_id=receipt.id) }}">View</a>
+            <form action="{{ url_for('delete_receipt', receipt_id=receipt.id) }}" method="post" class="inline-form">
+              <button type="submit" class="danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No receipts yet.</p>
+  {% endif %}
+</section>
+{% endblock %}

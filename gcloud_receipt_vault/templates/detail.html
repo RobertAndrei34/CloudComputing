@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="card">
+  <h2>{{ receipt.title }}</h2>
+  <p><strong>Category:</strong> {{ receipt.category }}</p>
+  <p><strong>Amount:</strong> {% if receipt.amount is not none %}{{ '%.2f'|format(receipt.amount) }}{% else %}-{% endif %}</p>
+  <p><strong>Original file:</strong> {{ receipt.filename }}</p>
+  <p><strong>Uploaded:</strong> {{ receipt.created_at|fmtdate }}</p>
+  <p><strong>Storage object:</strong> {{ receipt.gcs_uri }}</p>
+  <p><strong>Vision status:</strong> {{ receipt.vision_status }}</p>
+  <p><strong>File URL:</strong> <a href="{{ receipt.public_url }}" target="_blank" rel="noopener">Open file</a></p>
+
+  <h3>Detected labels</h3>
+  {% if receipt.labels %}
+    <ul>
+      {% for label in receipt.labels %}
+        <li>{{ label.description }} (score {{ label.score }})</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No labels available.</p>
+  {% endif %}
+
+  <h3>OCR text</h3>
+  {% if receipt.ocr_text %}
+    <pre>{{ receipt.ocr_text }}</pre>
+  {% else %}
+    <p>No text detected.</p>
+  {% endif %}
+
+  <p><a href="{{ url_for('index') }}">← Back</a></p>
+</section>
+{% endblock %}

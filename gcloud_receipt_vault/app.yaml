@@ -1,0 +1,14 @@
+runtime: python311
+entrypoint: gunicorn -b :$PORT app:app
+
+env_variables:
+  GOOGLE_CLOUD_PROJECT: "receipt-vault-2026-01"
+  RECEIPT_BUCKET: "receipt-vault-2026-01-storage-271"
+  ENABLE_VISION: "true"
+  FLASK_SECRET_KEY: "change-this-to-any-random-secret"
+
+handlers:
+  - url: /static
+    static_dir: static
+  - url: /.*
+    script: auto
