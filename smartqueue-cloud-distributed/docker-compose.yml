@@ -1,0 +1,90 @@
+services:
+  db:
+    image: postgres:16
+    container_name: smartqueue-db
+    restart: always
+    environment:
+      POSTGRES_DB: smartqueue
+      POSTGRES_USER: smartqueue
+      POSTGRES_PASSWORD: smartqueue
+    ports:
+      - "5432:5432"
+    volumes:
+      - smartqueue_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U smartqueue -d smartqueue"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: smartqueue-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: smartqueue-rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  backend:
+    build: ./backend
+    container_name: smartqueue-backend
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+psycopg2://smartqueue:smartqueue@db:5432/smartqueue
+      SECRET_KEY: change-this-secret-key
+      ACCESS_TOKEN_EXPIRE_MINUTES: 120
+      REDIS_URL: redis://redis:6379/0
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+      NOTIFICATIONS_MODE: worker
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  notification-worker:
+    build: ./backend
+    container_name: smartqueue-notification-worker
+    restart: always
+    command: ["python", "-m", "app.worker"]
+    environment:
+      DATABASE_URL: postgresql+psycopg2://smartqueue:smartqueue@db:5432/smartqueue
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    container_name: smartqueue-frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  smartqueue_pgdata:
